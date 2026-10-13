@@ -1,0 +1,26 @@
+{
+  "name": "mini-sql-db",
+  "version": "0.1.0",
+  "description": "An embedded relational database engine in TypeScript: SQL parser, query planner, on-disk B-tree, MVCC snapshot isolation, WAL + crash recovery. No database libraries used in the core.",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "test": "npm run build && node --test dist/tests/",
+    "test:unit": "npm run build && node --test dist/tests/unit.test.js",
+    "test:diff": "npm run build && node --test dist/tests/diff.test.js",
+    "test:crash": "npm run build && node --test dist/tests/crash.test.js",
+    "clean": "rm -rf dist"
+  },
+  "keywords": ["database", "sql", "embedded", "btree", "mvcc", "wal"],
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^22.10.0",
+    "better-sqlite3": "^12.2.0",
+    "typescript": "^5.7.0"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}
