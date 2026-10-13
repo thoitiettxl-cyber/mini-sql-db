@@ -405,10 +405,8 @@ class Parser {
         kind: 'select', distinct: false, columns: [], from: [],
         where: null, groupBy: [], having: null, orderBy: [],
         limit: null, offset: null,
-        setOp: { op, all, right },
+        setOp: { op, all, left: prev, right },
       };
-      // keep left side's own clauses inside the compound node
-      (left as ast.SelectStmt & { _left?: ast.SelectStmt })._left = prev;
     }
     this.parseTrailingClauses(left);
     return left;

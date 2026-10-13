@@ -57,7 +57,7 @@ export interface SelectStmt {
   orderBy: OrderKey[];
   limit: Expr | null;
   offset: Expr | null;
-  setOp: { op: SetOp; all: boolean; right: SelectStmt } | null;
+  setOp: { op: SetOp; all: boolean; left: SelectStmt; right: SelectStmt } | null;
 }
 
 export interface ColumnDef {
@@ -134,7 +134,10 @@ export function collectColumnsFromSelect(s: SelectStmt, out: { table: string | n
   for (const o of s.orderBy) collectColumns(o.expr, out);
   if (s.limit) collectColumns(s.limit, out);
   if (s.offset) collectColumns(s.offset, out);
-  if (s.setOp) collectColumnsFromSelect(s.setOp.right, out);
+  if (s.setOp) {
+    collectColumnsFromSelect(s.setOp.left, out);
+    collectColumnsFromSelect(s.setOp.right, out);
+  }
   return out;
 }
 

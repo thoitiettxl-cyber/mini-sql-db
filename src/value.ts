@@ -425,9 +425,10 @@ export function serializeChain(chain: RowVersion[]): Buffer {
   parts[0].writeUInt32BE(chain.length, 0);
   for (const ver of chain) {
     const rowBuf = serializeRow(ver.values);
-    const h = Buffer.alloc(16);
+    const h = Buffer.alloc(20);
     h.writeBigUInt64BE(ver.xmin, 0);
     h.writeBigUInt64BE(ver.xmax, 8);
+    h.writeUInt32BE(rowBuf.length, 16);
     parts.push(h, rowBuf);
   }
   return Buffer.concat(parts);
@@ -440,9 +441,9 @@ export function deserializeChain(buf: Buffer): RowVersion[] {
   for (let i = 0; i < n; i++) {
     const xmin = buf.readBigUInt64BE(off); off += 8;
     const xmax = buf.readBigUInt64BE(off); off += 8;
-    const rowLen = buf.readUInt32BE(off);
-    const values = deserializeRow(buf.subarray(off, off + 4 + rowLen));
-    off += 4 + rowLen;
+    const rowLen = buf.readUInt32BE(off); off += 4;
+    const values = deserializeRow(buf.subarray(off, off + rowLen));
+    off += rowLen;
     out.push({ xmin, xmax, values });
   }
   return out;
